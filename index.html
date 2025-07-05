@@ -4,11 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rider</title>
-    
+    <style>
+        p{
+            float: left;
+            color: white;
+        }
+        body {
+            margin: 0;
+            overflow: hidden;
+            
+        }
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        #myCanvas {
+            background-color: #000;
+        }
+    </style>
 </head>
 <body>
-     <canvas id="myCanvas" width="1500" height="800" style="border:1px solid #000000;">
+    <canvas id="myCanvas"  >
 </canvas>
+    <div style="position: absolute; top: 10px; left: 10px; color: white;">
+    <div ><p>Score: </p> 
+    <p id="score">0</p></div>
+    <br><br>
+    <br>
+    <p>Mayo: </p> 
+    <p id="mayo">0</p>
+    </div>
+     
 </body>
 <script src="main.js"></script>
 </html>
