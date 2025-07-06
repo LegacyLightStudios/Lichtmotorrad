@@ -145,10 +145,6 @@ function update() {
 }
 
 function drawPlayer() {
-    //test purpose circle
-    /* ctx.beginPath();
-    ctx.arc(offset, player.y, 4, 0, 2 * Math.PI);
-    ctx.stroke(); */
     //draw player centered an x and y coordinates
     ctx.save();
     ctx.translate(scale * offset, scale * player.y);
@@ -182,8 +178,6 @@ function drawPart() {
 function drawItems() {
     //draw items on the canvas
     for (let j = 0; j < items.length; j++) {
-        //ctx.fillRect(items[j].x - player.x , items[j].y, 10, 10);
-
         ctx.drawImage(itemi, scale * (items[j].x - player.x - 25), scale * (items[j].y - 25), scale * 50, scale * 50)
     }
 }
@@ -194,17 +188,20 @@ function draw() {
     drawPart()
     drawItems()
 }
-// Main function that updates movement and draws the player and parts.
-function main() {
-    update()
-    draw()
-}
+
+
 function addscore() {
     score++
     scoreelement.innerHTML = score
 }
+
 function init() {
     spawnPart(400)
+}
+// Main function that updates movement and draws the player and parts.
+function main() {
+    update()
+    draw()
 }
 function reset() {
     //reset all variables to initial state
@@ -246,6 +243,7 @@ document.body.onkeyup = function (e) {
         pressed = false
     }
 }
+// Event listeners for touch events; sets `pressed` to true when the screen is touched and false when released.
 document.addEventListener("touchstart", () => {
     pressed = true
 });
@@ -254,7 +252,7 @@ document.addEventListener("touchend", () => {
 });
 
 
-// Start the main loop
+//Spawn first parts of the map
 init()
 // Set an interval to call the main function every 10 milliseconds.
 mi = setInterval(main, 10)
