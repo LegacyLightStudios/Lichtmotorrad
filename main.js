@@ -169,7 +169,7 @@ function drawPart() {
         //draw functtion by drawin 1x1 rectangles
         if (p >= active - 2) {
             for (let i = 0; i < parts[p].end - parts[p].start; i++) {
-
+                
                 ctx.fillRect(scale * (i - player.x + parts[p].start), scale * (parts[p].func(i)), scale * 2, scale * 2,);
             }
         }
