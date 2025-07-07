@@ -13,12 +13,13 @@ let speedy = 1
 let pressed = false
 let active = 0 //active part of the level
 let offset = 100//offset of the player in x-direction
-let rot = 0
-let rotspeed = 0
-let on = false
-let mi
+let rot = 0//rotation
+let rotspeed = 0//speed of rotation
+let on = false //on the path
+let mi//main interval
 let score = 0
 let mayo = 0
+let flip=0
 let scoreelement = document.getElementById("score");
 let mayoelement = document.getElementById("mayo");
 let player = {
@@ -32,11 +33,11 @@ playeri.src = "assets/autoRot.png"
 const itemi = new Image();
 itemi.src = "assets/MayoFlasche.png"
 
-let i = {
+let item = {
     x: 240,
     y: 320
 }
-let items = [i]
+let items = [item]
 //Parts of the level. "start" and "end" define the x-coordinates of the part in the level, Function is defined in Interval [0;end-start] , "func" is the function of the path, and "der" is the derivative of that function for calculating speed and rotation.
 // Currently only used for testing purposes. Advanced level system will be developed later.
 let tp = {
@@ -60,7 +61,7 @@ let tp3 = {
 let possibleParts = [tp, tp2, tp3]
 let parts = [tp]
 function spawnPart(start) {
-    console.log("Spawning part at: " + start)
+    
     //spawn a new part of the level
     let rand = Math.floor(Math.random() * 3)
     let temp = Object.assign({}, possibleParts[rand])//copy the objkect not the reference
@@ -102,16 +103,24 @@ function update() {
     let tempd = parts[active].der(i)
     on = (player.y > temp - 20)
     if (on) {
-        if (Math.abs(rot - Math.atan(tempd)) > 1 && Math.abs(rot - Math.atan(tempd)) < Math.PI * 2 - 1) {
-            console.log("dead")
+        if (Math.abs(rot - Math.atan(tempd)) > 1 && Math.abs(rot - Math.atan(tempd)) < Math.PI * 2 - 1) {//check if angle is greater than 60degrees relative to the derivative
+           
             clearInterval(mi)
             alert("You crashed! Your score: " + score + " Mayo collected: " + mayo)
             reset()
         }
         rotspeed = 0
         rot = Math.atan(tempd)
+        score+=flip
+        scoreelement.innerHTML=score
+        flip=0
     }
     rot += rotspeed
+    
+    if(Math.abs(rot)>=2*Math.PI){
+        flip++
+    }
+    console.log(flip)
     rot = rot % (2 * Math.PI)
 
     //variable to check if the player is on the path or not
@@ -145,11 +154,13 @@ function update() {
 }
 
 function drawPlayer() {
-    //draw player centered an x and y coordinates
+    
     ctx.save();
+    //rotate canvas
     ctx.translate(scale * offset, scale * player.y);
     ctx.rotate(rot);
     ctx.translate(scale * -offset, scale * -player.y);
+    //draw player centered an x and y coordinates
     ctx.drawImage(playeri, scale * (offset - playeri.width * 0.05), scale * (player.y - playeri.height * 0.05), scale * (playeri.width * 0.1), scale * playeri.height * 0.1)
     ctx.restore();
 }
@@ -163,8 +174,6 @@ function drawPart() {
                 addscore()
             }
             active = p
-
-
         }
         //draw functtion by drawin 1x1 rectangles
         if (p >= active - 2) {
