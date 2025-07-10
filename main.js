@@ -105,6 +105,7 @@ function update() {
     //eval functions for calculating the current y-coordinate of the player and the derivative for rotation and to split the speed.
     let temp = parts[active].func(i)
     let tempd = parts[active].der(i)
+    //variable to check if the player is on the path or not
     on = (player.y > temp - 20)
     if (on) {
         if (Math.abs(rot - Math.atan(tempd)) > 1 && Math.abs(rot - Math.atan(tempd)) < Math.PI * 2 - 1) {//check if angle is greater than 60degrees relative to the derivative
@@ -114,13 +115,10 @@ function update() {
             reset()
         } else {
             console.log(flip)
-
             rotspeed = 0
             rot = Math.atan(tempd)
             score += flip
             scoreelement.innerHTML = score
-
-
             flip = 0
         }
     }
@@ -139,13 +137,11 @@ function update() {
     if (player.y - 25 < 0) {
 
         scale = 2 - ((player.y - 25) / 100) * -0.1
-        yoffset = (player.y - 25) * scale 
+        yoffset = (player.y - 25) * scale
     } else {
         scale = 2
         yoffset = 0
     }
-    console.log("Scale: " + scale + " Yoffset: " + yoffset)
-    //variable to check if the player is on the path or not
 
     if (player.y > temp) {
         //split up speed into x and y components based on the derivative of the path and the current speed.
