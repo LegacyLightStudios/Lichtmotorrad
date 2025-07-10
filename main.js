@@ -19,10 +19,10 @@ let on = false //on the path
 let mi//main interval
 let score = 0
 let mayo = 0
-let flip=0
+let flip = 0
 let scoreelement = document.getElementById("score");
 let mayoelement = document.getElementById("mayo");
-let fliptext=document.getElementById("add")
+let fliptext = document.getElementById("add")
 
 let flipreset
 let player = {
@@ -30,6 +30,7 @@ let player = {
     x: 0
 }
 let scale = 2
+let yoffset = 0
 //Player image
 const playeri = new Image();
 playeri.src = "assets/autoRot.png"
@@ -64,7 +65,7 @@ let tp3 = {
 let possibleParts = [tp, tp2, tp3]
 let parts = [tp]
 function spawnPart(start) {
-    
+
     //spawn a new part of the level
     let rand = Math.floor(Math.random() * 3)
     let temp = Object.assign({}, possibleParts[rand])//copy the objkect not the reference
@@ -107,34 +108,43 @@ function update() {
     on = (player.y > temp - 20)
     if (on) {
         if (Math.abs(rot - Math.atan(tempd)) > 1 && Math.abs(rot - Math.atan(tempd)) < Math.PI * 2 - 1) {//check if angle is greater than 60degrees relative to the derivative
-           
+
             clearInterval(mi)
             alert("You crashed! Your score: " + score + " Mayo collected: " + mayo)
             reset()
-        }else{
-        console.log(flip)
-        
-        rotspeed = 0
-        rot = Math.atan(tempd)
-        score+=flip
-        scoreelement.innerHTML=score
-        
-        
-        flip=0
+        } else {
+            console.log(flip)
+
+            rotspeed = 0
+            rot = Math.atan(tempd)
+            score += flip
+            scoreelement.innerHTML = score
+
+
+            flip = 0
         }
     }
     rot += rotspeed
-    
-    if(Math.abs(rot)>=2*Math.PI){
+
+    if (Math.abs(rot) >= 2 * Math.PI) {
         flip++
-        
-        fliptext.innerHTML="+ "+ flip.toString()
+
+        fliptext.innerHTML = "+ " + flip.toString()
         clearTimeout(flipreset)
-        flipreset=setTimeout(()=>{fliptext.innerHTML=""},2000)
+        flipreset = setTimeout(() => { fliptext.innerHTML = "" }, 2000)
     }
-    
+
     rot = rot % (2 * Math.PI)
 
+    if (player.y - 25 < 0) {
+
+        scale = 2 - ((player.y - 25) / 100) * -0.1
+        yoffset = (player.y - 25) * scale 
+    } else {
+        scale = 2
+        yoffset = 0
+    }
+    console.log("Scale: " + scale + " Yoffset: " + yoffset)
     //variable to check if the player is on the path or not
 
     if (player.y > temp) {
@@ -166,14 +176,18 @@ function update() {
 }
 
 function drawPlayer() {
-    
+
     ctx.save();
-    //rotate canvas
-    ctx.translate(scale * offset, scale * player.y);
+    // Mittelpunkt berechnen
+    let px = scale * offset;
+    let py = scale * player.y - yoffset;
+
+    // Canvas auf Spielerposition verschieben und rotieren
+    ctx.translate(px, py);
     ctx.rotate(rot);
-    ctx.translate(scale * -offset, scale * -player.y);
+    ctx.translate(-px, -py);
     //draw player centered an x and y coordinates
-    ctx.drawImage(playeri, scale * (offset - playeri.width * 0.05), scale * (player.y - playeri.height * 0.05), scale * (playeri.width * 0.1), scale * playeri.height * 0.1)
+    ctx.drawImage(playeri, scale * (offset - playeri.width * 0.05), scale * (player.y - playeri.height * 0.05) - yoffset, scale * (playeri.width * 0.1), scale * playeri.height * 0.1)
     ctx.restore();
 }
 
@@ -190,8 +204,8 @@ function drawPart() {
         //draw functtion by drawin 1x1 rectangles
         if (p >= active - 2) {
             for (let i = 0; i < parts[p].end - parts[p].start; i++) {
-                
-                ctx.fillRect(scale * (i - player.x + parts[p].start), scale * (parts[p].func(i)), scale * 2, scale * 2,);
+
+                ctx.fillRect(scale * (i - player.x + parts[p].start), scale * (parts[p].func(i)) - yoffset, scale * 2, scale * 2,);
             }
         }
     }
@@ -199,7 +213,7 @@ function drawPart() {
 function drawItems() {
     //draw items on the canvas
     for (let j = 0; j < items.length; j++) {
-        ctx.drawImage(itemi, scale * (items[j].x - player.x - 25), scale * (items[j].y - 25), scale * 50, scale * 50)
+        ctx.drawImage(itemi, scale * (items[j].x - player.x - 25), scale * (items[j].y - 25) - yoffset, scale * 50, scale * 50)
     }
 }
 // Function to clear the canvas and draws the player and parts.
@@ -243,7 +257,7 @@ function reset() {
     player.y = 0;
     items = [item];
     parts = [tp];
-    flip=0
+    flip = 0
     init()
     mi = setInterval(main, 10)
 }
