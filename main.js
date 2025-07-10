@@ -22,6 +22,9 @@ let mayo = 0
 let flip=0
 let scoreelement = document.getElementById("score");
 let mayoelement = document.getElementById("mayo");
+let fliptext=document.getElementById("add")
+
+let flipreset
 let player = {
     y: 0,
     x: 0
@@ -108,19 +111,28 @@ function update() {
             clearInterval(mi)
             alert("You crashed! Your score: " + score + " Mayo collected: " + mayo)
             reset()
-        }
+        }else{
+        console.log(flip)
+        
         rotspeed = 0
         rot = Math.atan(tempd)
         score+=flip
         scoreelement.innerHTML=score
+        
+        
         flip=0
+        }
     }
     rot += rotspeed
     
     if(Math.abs(rot)>=2*Math.PI){
         flip++
+        
+        fliptext.innerHTML="+ "+ flip.toString()
+        clearTimeout(flipreset)
+        flipreset=setTimeout(()=>{fliptext.innerHTML=""},2000)
     }
-    console.log(flip)
+    
     rot = rot % (2 * Math.PI)
 
     //variable to check if the player is on the path or not
@@ -229,8 +241,9 @@ function reset() {
     mayoelement.innerHTML = mayo;
     player.x = 0;
     player.y = 0;
-    items = [i];
+    items = [item];
     parts = [tp];
+    flip=0
     init()
     mi = setInterval(main, 10)
 }
