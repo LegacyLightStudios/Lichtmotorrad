@@ -26,7 +26,8 @@ let scoreelement = document.getElementById("score");
 let mayoelement = document.getElementById("mayo");
 let fliptext = document.getElementById("add")
 let ui = document.getElementById("ui");
-
+let highscoreelement = document.getElementById("highscore");
+let highscore=0
 let flipreset
 let player = {
     y: 0,
@@ -136,6 +137,10 @@ function update() {
             document.body.appendChild(explosion);
 
             setTimeout(() => {
+                if(score > highscore) {
+                    highscore = score
+                    highscoreelement.innerHTML = highscore
+                }
                 explosion.remove();
                 dead = false
                 reset()
