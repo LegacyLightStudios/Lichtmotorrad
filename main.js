@@ -20,9 +20,12 @@ let mi//main interval
 let score = 0
 let mayo = 0
 let flip = 0
+let started = false
+let dead = false
 let scoreelement = document.getElementById("score");
 let mayoelement = document.getElementById("mayo");
 let fliptext = document.getElementById("add")
+let ui = document.getElementById("ui");
 
 let flipreset
 let player = {
@@ -73,6 +76,13 @@ function spawnPart(start) {
     temp.start = start
     temp.end = start + length
     parts.push(temp)
+
+    for(let i = 0; i < Math.floor(Math.random() * 3); i++) { 
+        let itemx = Math.random() * (temp.end - temp.start) + temp.start
+        let itemy = temp.func(itemx - temp.start) - 30
+        items.push({ x: itemx, y: itemy })
+
+    }
 }
 function update() {
     // calculate speed of the player. Accelerate when space is pressed, decelerate when released.
@@ -109,10 +119,29 @@ function update() {
     on = (player.y > temp - 20)
     if (on) {
         if (Math.abs(rot - Math.atan(tempd)) > 1 && Math.abs(rot - Math.atan(tempd)) < Math.PI * 2 - 1) {//check if angle is greater than 60degrees relative to the derivative
-
+            
             clearInterval(mi)
-            alert("You crashed! Your score: " + score + " Mayo collected: " + mayo)
-            reset()
+            
+            
+            dead=true
+            let explosion = document.createElement('iframe');
+            explosion.src = 'explosion/explosion.html';
+            explosion.style.position = 'absolute';
+            explosion.style.left = (scale * (offset - playeri.width * 0.05)-30) + 'px';
+            explosion.style.top = (scale * (player.y - playeri.height * 0.05) - yoffset)-50 + 'px';
+            explosion.style.width = (scale * playeri.width * 0.2) + 'px';
+            explosion.style.height = (scale * playeri.height * 0.7) + 'px';
+            explosion.style.border = 'none';
+            explosion.style.zIndex = 1000;
+            document.body.appendChild(explosion);
+
+            setTimeout(() => {
+                explosion.remove();
+                dead = false
+                reset()
+            }, 2000);
+
+            
         } else {
             console.log(flip)
             rotspeed = 0
@@ -172,7 +201,7 @@ function update() {
 }
 
 function drawPlayer() {
-
+    if(!dead) {
     ctx.save();
     // Mittelpunkt berechnen
     let px = scale * offset;
@@ -183,8 +212,9 @@ function drawPlayer() {
     ctx.rotate(rot);
     ctx.translate(-px, -py);
     //draw player centered an x and y coordinates
-    ctx.drawImage(playeri, scale * (offset - playeri.width * 0.05), scale * (player.y - playeri.height * 0.05) - yoffset, scale * (playeri.width * 0.1), scale * playeri.height * 0.1)
+    ctx.drawImage(playeri, scale * (offset - playeri.width * 0.05), scale * (player.y - playeri.height * 0.05) - yoffset-10, scale * (playeri.width * 0.1), scale * playeri.height * 0.1)
     ctx.restore();
+    }
 }
 
 function drawPart() {
@@ -234,6 +264,15 @@ function main() {
     update()
     draw()
 }
+function start() {
+
+    //start the game
+    ui.style.visibility = "visible"
+    started = true
+    init()
+    reset()
+    
+}
 function reset() {
     //reset all variables to initial state
     maxspeed = 0
@@ -255,7 +294,7 @@ function reset() {
     parts = [tp];
     flip = 0
     init()
-    mi = setInterval(main, 10)
+    mi = setInterval(main, 15)
 }
 // Event listeners for space presses; sets `pressed` to true when space is pressed and false when released.
 document.body.onkeydown = function (e) {
@@ -285,6 +324,6 @@ document.addEventListener("touchend", () => {
 
 
 //Spawn first parts of the map
-init()
+
 // Set an interval to call the main function every 10 milliseconds.
-mi = setInterval(main, 10)
+
