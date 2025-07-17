@@ -59,7 +59,7 @@ class Particle {
 /* Timer is set for particle push 
     execution in intervals*/
 
-    for (i = 0; i <= 300; i++) {
+    for (i = 0; i <= 200; i++) {
         let dx = (Math.random() - 0.5) * (Math.random() * 6);
         let dy = (Math.random() - 0.5) * (Math.random() * 6);
         let radius = Math.random() * 3;

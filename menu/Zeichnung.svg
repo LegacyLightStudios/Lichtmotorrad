@@ -142,8 +142,7 @@
          y="60.125698"
          id="tspan6">0</tspan></text><a
        id="a5"
-       xlink:href="https://lichtmotorrad.onrender.com/"
-       target="https://lichtmotorrad.onrender.com/"><image
+       ><image
          width="66.145836"
          height="66.145836"
          preserveAspectRatio="none"
@@ -151,4 +150,4 @@
          id="image1"
          x="219.60417"
          y="147.48427"
-         onclick="let el=document.getElementById(&quot;money&quot;);let t=el.querySelector(&quot;tspan&quot;)||el;t.textContent=&quot;sss&quot;;" /></a></g></svg>
+         onclick="parent.start()" /></a></g></svg>

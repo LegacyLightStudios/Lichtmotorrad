@@ -55,24 +55,95 @@ let tp = {
     der: i => Math.cos(0.01 * i)
 }
 let tp2 = {
-    start: 0,
-    end: 400,
+    start: 200,
+    end: 600,
     func: i => -1 * Math.pow(1.0111, i) + 270,
     der: i => -1 * Math.log(1.0111) * Math.pow(1.0111, i)
 }
 let tp3 = {
-    start: 0,
-    end: 400,
+    start: 200,
+    end: 600,
     func: i => 270 + i * -0.01,
     der: i => -0.01 + i * 0
 }
-let possibleParts = [tp, tp2, tp3]
+// Weitere Streckenabschnitte
+let tp4 = {
+    start: 200,
+    end: 600,
+    func: i => 270 + 50 * Math.cos(0.02 * i),
+    der: i => -50 * 0.02 * Math.sin(0.02 * i)
+}
+let tp5 = {
+    start: 200,
+    end: 400,
+    func: i => 270 + -0.1 * Math.pow(i, 1.5),
+    der: i => -0.15 * Math.sqrt(i)
+}
+let tp6 = {
+    start: 200,
+    end: 2000,
+    func: i => 270 + 80 * Math.sin(0.002 * i) * Math.cos(0.008 * i),
+    der: i => 80 * (0.002 * Math.cos(0.002 * i) * Math.cos(0.008 * i) - 0.008 * Math.sin(0.002 * i) * Math.sin(0.008 * i))
+}
+let tp7 = {
+    start: 200,
+    end: 2000,
+    func: i => 270 + 0.02 * i + 40 * Math.sin(0.01 * i),
+    der: i => 0.02 + 40 * 0.01 * Math.cos(0.01 * i)
+}
+let tp8 = {
+    start: 200,
+    end: 2000,
+    func: i => 270 + 60 * Math.sin(0.004 * i) + 30 * Math.cos(0.008 * i),
+    der: i => 60 * 0.004 * Math.cos(0.004 * i) - 30 * 0.008 * Math.sin(0.008 * i)
+}
+
+let tp9 = {
+    start: 0,
+    end: 200,
+    func: i => 50*Math.pow(Math.E,0.0001*i*i),
+    der: i => 50* 0.0002 * i * Math.pow(Math.E, 0.0001 * i * i)
+}
+
+/* let tpLoop = {
+    start: 0,
+    end: 400,
+    func: i => {
+        // Looping: a circle segment (vertical loop)
+        // Center at x=200, y=270, radius=80
+        if (i < 100) {
+            // Approach
+            return 270;
+        } else if (i < 300) {
+            // Loop arc: from bottom (pi/2) to top (3pi/2)
+            let angle = Math.PI / 2 + ((i - 100) / 200) * Math.PI;
+            return 270 - 80 * Math.sin(angle);
+        } else {
+            // Exit
+            return 270;
+        }
+    },
+    der: i => {
+        if (i < 100) {
+            return 0;
+        } else if (i < 300) {
+            let angle = Math.PI / 2 + ((i - 100) / 200) * Math.PI;
+            // dy/dx = -80 * cos(angle) * d(angle)/dx
+            return -80 * Math.cos(angle) * (Math.PI / 200);
+        } else {
+            return 0;
+        }
+    }
+}; */
+
+let possibleParts = [tp, tp2, tp3, tp4, tp5, tp6, tp7, tp8,tp9/* , tpLoop */];
+
 let parts = [tp]
 function spawnPart(start) {
 
     //spawn a new part of the level
-    let rand = Math.floor(Math.random() * 3)
-    let temp = Object.assign({}, possibleParts[rand])//copy the objkect not the reference
+    let rand = Math.floor(Math.random() * possibleParts.length)
+    let temp = Object.assign({}, possibleParts[rand])//copy the object not the reference
     let length = temp.end - temp.start
     temp.start = start
     temp.end = start + length
@@ -135,7 +206,7 @@ function update() {
             explosion.style.border = 'none';
             explosion.style.zIndex = 1000;
             document.body.appendChild(explosion);
-
+            
             setTimeout(() => {
                 if(score > highscore) {
                     highscore = score
@@ -143,8 +214,9 @@ function update() {
                 }
                 explosion.remove();
                 dead = false
-                reset()
+                reset() 
             }, 2000);
+            
 
             
         } else {
