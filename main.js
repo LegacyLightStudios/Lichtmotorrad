@@ -136,7 +136,7 @@ let tp9 = {
     }
 }; */
 
-let possibleParts = [tp, tp2, tp3, tp4, tp5, tp6, tp7, tp8,tp9/* , tpLoop */];
+let possibleParts = [tp, tp2, tp3, tp4,  tp6, tp7, tp8/* , tpLoop */];
 
 let parts = [tp]
 function spawnPart(start) {
